@@ -1,0 +1,41 @@
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: mariadb-primary-storage-class
+provisioner: kubernetes.io/no-provisioner
+volumeBindingMode: WaitForFirstConsumer
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: mariadb-primary-persistent-volume
+spec:
+  storageClassName: mariadb-primary-storage-class   # 스토리지 클래스 이름
+  capacity:
+    storage: 8Gi    # 스토리지 용량 크기
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce # 하나의 Pod에서만 access가 가능하도록 설정, ReadWriteMany는 여러 개 노드에서 접근 가능
+  hostPath:
+      path: /data/mariadb/primary   # node에 저장될 스토리지 공간
+---
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: mariadb-secondary-storage-class
+provisioner: kubernetes.io/no-provisioner
+volumeBindingMode: WaitForFirstConsumer
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: mariadb-secondary-persistent-volume
+spec:
+  storageClassName: mariadb-secondary-storage-class   # 스토리지 클래스 이름
+  capacity:
+    storage: 8Gi    # 스토리지 용량 크기
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce # 하나의 Pod에서만 access가 가능하도록 설정, ReadWriteMany는 여러 개 노드에서 접근 가능
+  hostPath:
+      path: /data/mariadb/secondary   # node에 저장될 스토리지 공간
